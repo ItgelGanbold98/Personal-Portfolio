@@ -1,0 +1,52 @@
+* {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+}
+
+.webpage-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ensure full viewport height */
+    overflow-y: scroll; /* Enable vertical scrolling */
+    scroll-snap-type: y mandatory; /* Enable scroll snapping */
+}
+
+.webpage {
+    opacity: 0;
+    /* transform: translateY(20px); */
+    animation-delay: 0.5s;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        /* transform: translateY(20px); */
+    }
+    to {
+        opacity: 1;
+        /* transform: translateY(0); */
+    }
+}
+
+.webpage {
+    animation-name: fade-in;
+}
+
+.webpage > div {
+    height: 100vh; /* Set each section to full viewport height */
+    scroll-snap-align: start; /* Snap at the start of each section */
+    scroll-snap-stop: always; /* Ensure consistent snapping behavior */
+}
+
+@media screen and (max-width: 1360px) {
+    .webpage > div {
+        height: auto;
+    }
+    .webpage {
+        height: auto;
+    }
+}
