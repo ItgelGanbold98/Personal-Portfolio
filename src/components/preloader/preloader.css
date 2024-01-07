@@ -1,0 +1,98 @@
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+.preloader-container {
+    position: fixed; /* Position the container fixed within the viewport */
+    top: 0;
+    left: 0;
+    width: 100%; /* Take the full width of the viewport */
+    height: 100%; /* Take the full height of the viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; /* Place it above other content */
+}
+
+.preloader-fade-in {
+    height: 100vh;
+    opacity: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fade-in 1s forwards;
+}
+
+.preloader-fade-out {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    z-index: 100;
+    opacity: 1;
+    animation: fade-out 1s forwards;
+}
+
+.wrapper {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 10px;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 4rem;
+    z-index: 999;
+}
+
+.typing-text-Hi,
+.typing-text-welcome {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    opacity: 0;
+    animation: fade-in 1s forwards; /* Apply the fade-in animation */
+}
+
+.typing-text-Hi {
+    animation-delay: 0.5s;
+}
+
+.typing-text-welcome {
+    animation-delay: 1.5s;
+    justify-content: start;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.fade-out-delayed {
+    animation: fade-out 1s forwards; /* Apply the fade-out animation */
+}
+
+@media screen and (max-width: 900px) {
+    .typing-text-welcome {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+}

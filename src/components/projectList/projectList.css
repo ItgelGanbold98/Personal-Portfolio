@@ -1,0 +1,39 @@
+.project-list-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.project-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: auto;
+}
+
+.project-list-title {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-weight: 700;
+    font-size: 58px;
+    font-style: italic;
+    margin: 30px 0px;
+    cursor: default;
+}
+
+@media screen and (max-width: 1360px) {
+    .project-list-container {
+        width: 100%;
+        height: auto;
+    }
+
+    .project-list {
+        justify-content: center;
+    }
+
+    .project-list-title {
+        font-size: 36px;
+    }
+}

@@ -1,0 +1,141 @@
+.contact-container {
+    height: 100vh;
+}
+
+.contact-wrapper {
+    padding: 50px;
+    display: flex;
+}
+
+.contact-left {
+    flex: 1;
+}
+.contact-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.contact-title {
+    font-size: 60px;
+    width: 80%;
+    padding: 50px 0px;
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: center;
+    margin: 50px 0px;
+    font-weight: 300;
+}
+
+.icon {
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+}
+.contact-info-link {
+    display: flex;
+    text-decoration: none;
+    align-items: center;
+}
+
+.contact-description {
+    font-weight: 200;
+    font-size: 1.2rem;
+}
+
+form {
+    margin-top: 20px;
+}
+input {
+    width: 50%;
+    height: 50px;
+    border: none;
+    border-bottom: 1px solid black;
+    margin: 10px 0px;
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+textarea {
+    width: 100%;
+    margin: 10px 0px;
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+button {
+    border: none;
+    padding: 15px 20px;
+    background-color: #277aff;
+    border-radius: 5px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 30px;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: #0500a2;
+    transition: width 0.3s ease-in-out;
+}
+
+button:hover::before {
+    width: 100%;
+}
+button:hover {
+    background-color: #458cff;
+}
+
+@media screen and (max-width: 768px) {
+    .contact-container {
+        height: 100%;
+    }
+
+    .contact-wrapper {
+        padding: 30px;
+        flex-direction: column;
+    }
+
+    .contact-title {
+        font-size: 32px;
+        width: 100%;
+        padding: 10px 0px;
+    }
+
+    .contact-info-item {
+        margin: 10px 0px;
+    }
+
+    .icon {
+        width: 15px;
+    }
+
+    .contact-description {
+        font-size: 0.7rem;
+    }
+
+    form {
+        margin-top: 5px;
+    }
+
+    input {
+        width: 100%;
+        height: 30px;
+    }
+
+    textarea {
+        margin: 15px 0px;
+        padding-left: 15px;
+    }
+}
