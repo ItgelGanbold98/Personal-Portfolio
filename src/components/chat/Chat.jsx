@@ -3,12 +3,16 @@ import styled from 'styled-components';
 import { FaArrowCircleUp } from 'react-icons/fa';
 import axios from 'axios';
 import { ThemeContext } from '../../context';
+import { IoMdChatbubbles } from 'react-icons/io';
 
 const Chat = () => {
     const theme = useContext(ThemeContext);
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+
+    const toggleChat = () => setIsChatOpen(!isChatOpen);
 
     useEffect(() => {
         console.log('Theme ', theme);
@@ -32,6 +36,7 @@ const Chat = () => {
 
     const sendMessage = async (e) => {
         e.preventDefault();
+
         if (!input.trim()) return;
 
         // Check if the message limit has been reached
@@ -61,78 +66,125 @@ const Chat = () => {
     }, [messages]);
 
     const inputRef = useRef(null);
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (isChatOpen && !event.target.closest('#chatContainerId')) {
+                setIsChatOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        return () =>
+            document.removeEventListener('mousedown', handleOutsideClick);
+    }, [isChatOpen]);
 
     return (
-        <Container
-            style={{
-                backgroundColor: theme.state.darkMode ? '#2b303d' : 'white',
-                borderRadius: '10px'
-            }}
-        >
-            <div
+        <>
+            <ChatbotIcon
+                onClick={toggleChat}
+                isOpen={isChatOpen}
                 style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: '300px',
-                    overflow: 'auto',
-                    marginBottom: '10px',
-                    padding: '10px',
-                    backgroundColor: theme.state.darkMode && '#2b303d',
+                    backgroundColor: theme.state.darkMode
+                        ? '#2b303d'
+                        : 'aliceblue'
+                }}
+            >
+                <IoMdChatbubbles
+                    style={{
+                        width: '50px',
+                        height: '50px'
+                    }}
+                />
+            </ChatbotIcon>
+            <Container
+                id="chatContainerId"
+                isOpen={isChatOpen}
+                style={{
+                    backgroundColor: theme.state.darkMode ? '#2b303d' : 'white',
                     borderRadius: '10px'
                 }}
             >
-                {messages.map((message, index) =>
-                    message.role === 'user' ? (
-                        <UserMessageContainer key={index}>
-                            <UserMessage>{message.content}</UserMessage>
-                        </UserMessageContainer>
-                    ) : (
-                        <BotMessageContainer key={index}>
-                            <BotMessage>{message.content}</BotMessage>
-                        </BotMessageContainer>
-                    )
-                )}
-                <div ref={messagesEndRef} />{' '}
-                {/* Invisible element at the end of messages */}
-            </div>
-            <Form
-                onSubmit={sendMessage}
-                style={{ backgroundColor: theme.state.darkMode && '#282f40' }}
-            >
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about me!"
+                <div
                     style={{
-                        marginRight: '10px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '300px',
+                        overflow: 'auto',
+                        marginBottom: '10px',
                         padding: '10px',
-                        width: '200px',
-                        height: '30px',
-                        backgroundColor: 'white',
-                        borderRadius: '5px',
-                        backgroundColor: theme.state.darkMode && '#242a3a',
-                        color: theme.state.darkMode ? 'white' : 'black'
+                        backgroundColor: theme.state.darkMode && '#2b303d',
+                        borderRadius: '10px'
                     }}
-                />
-                <Button type="submit">
-                    <FaArrowCircleUp
+                >
+                    {messages.map((message, index) =>
+                        message.role === 'user' ? (
+                            <UserMessageContainer key={index}>
+                                <UserMessage>{message.content}</UserMessage>
+                            </UserMessageContainer>
+                        ) : (
+                            <BotMessageContainer key={index}>
+                                <BotMessage>{message.content}</BotMessage>
+                            </BotMessageContainer>
+                        )
+                    )}
+                    <div ref={messagesEndRef} />{' '}
+                </div>
+                <Form
+                    onSubmit={sendMessage}
+                    style={{
+                        backgroundColor: theme.state.darkMode && '#282f40'
+                    }}
+                >
+                    <input
+                        ref={inputRef}
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Ask about me!"
                         style={{
-                            height: '50px',
-                            width: '45px',
-                            color: theme.state.darkMode ? 'black' : 'navy'
+                            marginRight: '10px',
+                            padding: '10px',
+                            width: '200px',
+                            height: '30px',
+                            backgroundColor: 'white',
+                            borderRadius: '5px',
+                            backgroundColor: theme.state.darkMode && '#242a3a',
+                            color: theme.state.darkMode ? 'white' : 'black'
                         }}
                     />
-                </Button>
-            </Form>
-        </Container>
+                    <Button type="submit">
+                        <FaArrowCircleUp
+                            style={{
+                                height: '50px',
+                                width: '45px',
+                                color: theme.state.darkMode ? 'black' : 'navy'
+                            }}
+                        />
+                    </Button>
+                </Form>
+            </Container>
+        </>
     );
 };
 
 export default Chat;
 
+const ChatbotIcon = styled.div`
+    display: ${(props) => (props.isOpen ? 'none' : 'flex')};
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+    width: 60px;
+    height: 60px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+`;
+
 const Container = styled.div`
+    display: ${(props) => (props.isOpen ? 'block' : 'none')};
     position: fixed;
     bottom: 20px;
     right: 20px;
