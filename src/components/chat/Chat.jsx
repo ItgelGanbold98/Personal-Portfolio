@@ -47,10 +47,13 @@ const Chat = () => {
     const sendMessageToServer = async (userInput) => {
         try {
             console.log('User message: ', userInput);
-            const response = await axios.post('http://localhost:3000/chat', {
-                message: userInput,
-                context: personalInfo
-            });
+            const response = await axios.post(
+                'http://ec2-176-34-218-233.eu-west-1.compute.amazonaws.com:3000/chat',
+                {
+                    message: userInput,
+                    context: personalInfo
+                }
+            );
             console.log('Reply: ', response.data.message.content);
             return response.data.message.content;
         } catch (error) {
