@@ -12,7 +12,33 @@ const Chat = () => {
     const messagesEndRef = useRef(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
 
-    const toggleChat = () => setIsChatOpen(!isChatOpen);
+    const personalInfo = `I am a virtual assistant knowledgeable about Itgel Ganbold and I live 
+    in his portfolio website, which contains his CV. My purpose is to provide information
+    about him to potential employers, so he can get hired.
+    He is a skilled software developer and tech enthusiast. Itgel holds a Master's in 
+    Computer Science and a Bachelor's in Physics from University College Dublin. 
+    Experienced in Python, Java, React JS, Docker, Kubernetes, Ruby other technologies, Itgel has worked 
+    on projects such as a smart parking web application and an app for 
+    city bike users. Passionate about technology, science, and video games, Itgel 
+    enjoys exploring new advancements and engaging in creative problem-solving. 
+    Feel free to ask me about Itgel's skills, experiences, or projects. I will keep my answers short. If 
+    asked about something that isn't in this text, I will tell them to check Itgel's CV.`;
+
+    useEffect(() => {
+        if (!isChatOpen) {
+            setMessages([
+                {
+                    role: 'bot',
+                    content:
+                        "Hello 👋 I'm Itgel's assistant! Happy to answer questions about him. Ask me anything about his skills, experience, or projects. I'm powered by OpenAI GPT technology. 🌟"
+                }
+            ]);
+        }
+    }, []);
+
+    const toggleChat = () => {
+        setIsChatOpen(!isChatOpen);
+    };
 
     useEffect(() => {
         console.log('Theme ', theme);
@@ -22,17 +48,18 @@ const Chat = () => {
         try {
             console.log('User message: ', userInput);
             const response = await axios.post('http://localhost:3000/chat', {
-                message: userInput
+                message: userInput,
+                context: personalInfo
             });
             console.log('Reply: ', response.data.message.content);
             return response.data.message.content;
         } catch (error) {
             console.error('Error sending message to server:', error);
-            return 'Looks like my assistant is asleep 😴';
+            return 'Oops! Looks like my assistant is asleep 😴 Try again later!';
         }
     };
 
-    const MAX_MESSAGES_PER_SESSION = 10;
+    const MAX_MESSAGES_PER_SESSION = 5;
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -41,7 +68,9 @@ const Chat = () => {
 
         // Check if the message limit has been reached
         if (messages.length >= MAX_MESSAGES_PER_SESSION * 2) {
-            alert('Sorry, only 10 messages allowed per session! 👮');
+            alert(
+                `Sorry, only ${MAX_MESSAGES_PER_SESSION} messages allowed per session! 👮`
+            );
             return;
         }
 
@@ -66,6 +95,7 @@ const Chat = () => {
     }, [messages]);
 
     const inputRef = useRef(null);
+
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (isChatOpen && !event.target.closest('#chatContainerId')) {
@@ -236,6 +266,7 @@ const UserMessage = styled.div`
     height: auto;
     padding: 5px; /* Add some padding for better readability */
     border-radius: 10px; /* Optional: for rounded corners */
+    font-size: small;
 `;
 
 const BotMessageContainer = styled.div`
@@ -243,6 +274,7 @@ const BotMessageContainer = styled.div`
     justify-content: flex-start; // Align bot messages to the left
     width: 100%;
     margin-bottom: 5px;
+    font-size: small;
 `;
 
 const BotMessage = styled.div`

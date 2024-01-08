@@ -30,11 +30,16 @@ const chatLimiter = rateLimit({
 // Chat endpoint
 app.post('/chat', chatLimiter, async (req, res) => {
     const userMessage = req.body.message;
+    const personalInfo = req.body.context;
     console.log('User message: ', userMessage);
+    console.log('Context: ', personalInfo);
     try {
         const response = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo',
-            messages: [{ role: 'user', content: userMessage }],
+            messages: [
+                { role: 'user', content: userMessage },
+                { role: 'assistant', content: personalInfo }
+            ],
             stream: false
         });
 
