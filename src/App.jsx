@@ -51,6 +51,7 @@ import Contact from './components/contact/Contact';
 import Toggle from './components/toggle/Toggle';
 import { ThemeContext } from './context';
 import Preloader from './components/preloader/Preloader';
+import Chat from './components/chat/Chat';
 
 const App = () => {
     const theme = useContext(ThemeContext);
@@ -83,6 +84,7 @@ const App = () => {
                 <div className="webpage">
                     <div className="section">
                         <Toggle />
+                        <Chat />
                         <Intro id="intro" />
                     </div>
                     <div className="section">
