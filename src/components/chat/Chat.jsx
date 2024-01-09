@@ -10,7 +10,7 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
-    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(true);
 
     const personalInfo = `I am a virtual assistant knowledgeable about Itgel Ganbold and I live 
     in his portfolio website, which contains his CV. My purpose is to provide information
@@ -25,7 +25,7 @@ const Chat = () => {
     asked about something that isn't in this text, I will tell them to check Itgel's CV.`;
 
     useEffect(() => {
-        if (!isChatOpen) {
+        if (isChatOpen) {
             setMessages([
                 {
                     role: 'bot',
@@ -48,7 +48,7 @@ const Chat = () => {
         try {
             console.log('User message: ', userInput);
             const response = await axios.post(
-                'http://ec2-176-34-218-233.eu-west-1.compute.amazonaws.com:3000/chat',
+                'https://f9812b964b4e5d803572b989ba342593.serveo.net/chat',
                 {
                     message: userInput,
                     context: personalInfo
