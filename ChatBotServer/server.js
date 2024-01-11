@@ -27,25 +27,71 @@ const chatLimiter = rateLimit({
     legacyHeaders: false
 });
 
+// Define a map to store conversation histories for different sessions
+const sessionHistories = new Map();
+const sessionTTL = 60 * 60 * 1000; // 1 hour in milliseconds
+
+// Function to clean up expired sessions
+const cleanupExpiredSessions = () => {
+    const currentTime = Date.now();
+    for (const [sessionID, { lastAccessed }] of sessionHistories.entries()) {
+        if (currentTime - lastAccessed >= sessionTTL) {
+            // Session has expired, remove it from the map
+            sessionHistories.delete(sessionID);
+        }
+    }
+};
+
+// Set up a periodic cleanup task (e.g., every 15 minutes)
+setInterval(cleanupExpiredSessions, 15 * 60 * 1000);
+
 // Chat endpoint
 app.post('/chat', chatLimiter, async (req, res) => {
     const userMessage = req.body.message;
-    const personalInfo = req.body.context;
+    const sessionID = req.body.sessionID; // Unique session identifier sent by the client
+
+    // Retrieve or create a conversation history for the session
+    let sessionData = sessionHistories.get(sessionID);
+    if (!sessionData) {
+        // Initialize a new session data object
+        sessionData = {
+            conversationHistory: [], // Initialize conversationHistory as an empty array
+            lastAccessed: Date.now()
+        };
+        sessionHistories.set(sessionID, sessionData);
+    } else {
+        // Update the last accessed timestamp for the session
+        sessionData.lastAccessed = Date.now();
+    }
+
+    const conversationHistory = sessionData.conversationHistory; // Get conversation history from sessionData
+
     console.log('User message: ', userMessage);
-    console.log('Context: ', personalInfo);
+    console.log('Session ID: ', sessionID);
+    console.log('Conversation History: ', conversationHistory);
+
     try {
+        // Add the user's new message to the conversation history
+        conversationHistory.push({ role: 'user', content: userMessage });
+
+        // Call the OpenAI API with the updated conversation history
         const response = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
-            messages: [
-                { role: 'user', content: userMessage },
-                { role: 'assistant', content: personalInfo }
-            ],
+            model: 'gpt-4',
+            messages: conversationHistory, // Pass the entire conversation history
+
             stream: false
         });
 
         const botResponse = response.choices[0].message;
-        console.log('Bot reply: ', botResponse);
-        res.json({ message: botResponse });
+        console.log('Bot reply: ', botResponse.content);
+
+        // Add the bot's response to the conversation history
+        conversationHistory.push({
+            role: 'assistant',
+            content: botResponse.content
+        });
+
+        res.json({ message: botResponse, conversation: conversationHistory });
     } catch (error) {
         console.error('Error in OpenAI API call:', error);
         res.status(500).send('An error occurred in generating a response');

@@ -4,6 +4,7 @@ import { FaArrowCircleUp } from 'react-icons/fa';
 import axios from 'axios';
 import { ThemeContext } from '../../context';
 import { IoMdChatbubbles } from 'react-icons/io';
+import { v4 as uuidv4 } from 'uuid';
 
 const Chat = () => {
     const theme = useContext(ThemeContext);
@@ -11,30 +12,55 @@ const Chat = () => {
     const [input, setInput] = useState('');
     const messagesEndRef = useRef(null);
     const [isChatOpen, setIsChatOpen] = useState(true);
+    const [sessionID, setSessionID] = useState(null);
 
-    const personalInfo = `I am a virtual assistant knowledgeable about Itgel Ganbold and I live 
-    in his portfolio website, which contains his CV. My purpose is to provide information
-    about him to potential employers, so he can get hired.
-    He is a skilled software developer and tech enthusiast. Itgel holds a Master's in 
-    Computer Science and a Bachelor's in Physics from University College Dublin. 
-    Experienced in Python, Java, React JS, Docker, Kubernetes, Ruby other technologies, Itgel has worked 
+    const personalInfo = `You are a virtual assistant knowledgeable about Itgel Ganbold and you live 
+    in his portfolio website, which contains his CV. Your purpose is to provide information
+    about him to potential employers, so he can get hired. Itgel is a male and 25 years old, 
+    he is a skilled software developer and tech enthusiast. Itgel holds a MSc 
+    Computer Science and a BSc in Physics from University College Dublin. He has a
+    beautiful girlfriend called Yu Feng, who he loves very much. He is
+    experienced in Python, Java, React JS, Docker, Kubernetes, Ruby other technologies, Itgel has worked 
     on projects such as a smart parking web application and an app for 
     city bike users. Passionate about technology, science, and video games, Itgel 
-    enjoys exploring new advancements and engaging in creative problem-solving. 
-    Feel free to ask me about Itgel's skills, experiences, or projects. I will keep my answers short. If 
-    asked about something that isn't in this text, I will tell them to check Itgel's CV.`;
+    enjoys exploring new advancements and engaging in creative problem-solving. You will keep your answers short. If 
+    asked about something that isn't known, you will tell them to check Itgel's CV.`;
+
+    const generateSessionID = () => {
+        return uuidv4(); // Generate a random UUID
+    };
+
+    useEffect(() => {
+        setSessionID(generateSessionID());
+    }, []);
 
     useEffect(() => {
         if (isChatOpen) {
             setMessages([
                 {
                     role: 'bot',
-                    content:
-                        "Hello 👋 I'm Itgel's assistant! Happy to answer questions about him. Ask me anything about his skills, experience, or projects. I'm powered by OpenAI GPT technology. 🌟"
+                    content: (
+                        <span>
+                            Hello 👋 I'm Itgel's assistant! Happy to answer
+                            questions about him. Ask me anything about his
+                            skills, experience, or projects. I'm powered by
+                            OpenAI GPT technology. 🌟 For a more comprehensive
+                            experience, visit{' '}
+                            <a
+                                href="https://chat.openai.com/g/g-gnZdb3oPW-career-companion-itgel"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                here
+                            </a>
+                        </span>
+                    )
                 }
             ]);
+
+            sendMessageToServer(personalInfo);
         }
-    }, []);
+    }, [sessionID]);
 
     const toggleChat = () => {
         setIsChatOpen(!isChatOpen);
@@ -47,11 +73,14 @@ const Chat = () => {
     const sendMessageToServer = async (userInput) => {
         try {
             console.log('User message: ', userInput);
+            console.log('Session ID: ', sessionID);
             const response = await axios.post(
-                'https://f9812b964b4e5d803572b989ba342593.serveo.net/chat',
+                // 'http://localhost:3000/chat',
+                'https://api.itgelganbold.com/chat',
                 {
                     message: userInput,
-                    context: personalInfo
+                    sessionID: sessionID
+                    // context: personalInfo
                 }
             );
             console.log('Reply: ', response.data.message.content);
